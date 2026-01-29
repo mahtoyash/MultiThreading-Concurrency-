@@ -1,0 +1,27 @@
+//1: Extending Thread class
+class MyThread extends Thread {
+    public void run() {
+        System.out.println("Thread running: " + Thread.currentThread().getName());
+    }
+}
+
+//2: Implementing Runnable
+class MyRunnable implements Runnable {
+    public void run() {
+        System.out.println("Runnable running: " + Thread.currentThread().getName());
+    }
+}
+
+
+
+
+// FOR ACTUALLLY STARTING THE THREADS
+public class Main {
+    public static void main(String[] args) {
+        MyThread t1 = new MyThread();
+        t1.start();
+        
+        Thread t2 = new Thread(new MyRunnable());
+        t2.start();
+    }
+}
