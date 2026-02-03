@@ -173,3 +173,61 @@ public void returnObject(T obj) {
 public int available() {
     return pool.size();
 }
+
+
+
+// IMPORTANT - Dining Philosophers Problem Solution
+import java.util.concurrent.locks.*;
+class Philosopher extends Thread {
+private final int id;
+private final Lock leftFork;
+private final Lock rightFork;
+private int mealsEaten = 0;
+
+public Philosopher(int id, Lock leftFork, Lock rightFork) {
+    this.id = id;
+    this.leftFork = leftFork;
+    this.rightFork = rightFork;
+}
+
+@Override
+public void run() {
+    try {
+        while (mealsEaten < 5) {
+            think();
+            eat();
+        }
+        System.out.println("Philosopher " + id + " finished eating");
+    } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+    }
+}
+
+private void think() throws InterruptedException {
+    System.out.println("Philosopher " + id + " is thinking");
+    Thread.sleep((long)(Math.random() * 100));
+}
+
+private void eat() throws InterruptedException {
+    // Always acquire locks in same order to prevent deadlock
+    Lock first = (id % 2 == 0) ? leftFork : rightFork;
+    Lock second = (id % 2 == 0) ? rightFork : leftFork;
+    
+    first.lock();
+    try {
+        second.lock();
+        try {
+            System.out.println("Philosopher " + id + " is eating (meal " + (mealsEaten + 1) + ")");
+            Thread.sleep((long)(Math.random() * 100));
+            mealsEaten++;
+        } finally {
+            second.unlock();
+        }
+    } finally {
+        first.unlock();
+    }
+}
+}
+
+
+
