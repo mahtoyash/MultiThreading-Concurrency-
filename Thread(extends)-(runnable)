@@ -86,3 +86,41 @@ public void write(int newValue) {
         writeLock.unlock();
     }
 }
+
+
+3. Fork-Join Framework for Parallel Processing
+import java.util.concurrent.*;
+class SumTask extends RecursiveTask<Long> {
+private static final int THRESHOLD = 10000;
+private final long[] array;
+private final int start;
+private final int end;
+
+public SumTask(long[] array, int start, int end) {
+    this.array = array;
+    this.start = start;
+    this.end = end;
+}
+
+@Override
+protected Long compute() {
+    if (end - start <= THRESHOLD) {
+        // Compute directly
+        long sum = 0;
+        for (int i = start; i < end; i++) {
+            sum += array[i];
+        }
+        return sum;
+    } else {
+        // Split task
+        int mid = (start + end) / 2;
+        SumTask leftTask = new SumTask(array, start, mid);
+        SumTask rightTask = new SumTask(array, mid, end);
+        
+        leftTask.fork(); // Async execution
+        long rightResult = rightTask.compute(); // Current thread
+        long leftResult = leftTask.join(); // Wait for result
+        
+        return leftResult + rightResult;
+    }
+}
