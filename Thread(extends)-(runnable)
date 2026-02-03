@@ -124,3 +124,52 @@ protected Long compute() {
         return leftResult + rightResult;
     }
 }
+
+
+
+4.Custom Thread-Safe Object Pool
+import java.util.concurrent.*;
+class ObjectPool<T> {
+private final BlockingQueue<T> pool;
+private final ObjectFactory<T> factory;
+private final int maxSize;
+private int currentSize = 0;
+
+interface ObjectFactory<T> {
+    T create();
+}
+
+public ObjectPool(int size, ObjectFactory<T> factory) {
+    this.maxSize = size;
+    this.factory = factory;
+    this.pool = new LinkedBlockingQueue<>(size);
+}
+
+public T borrowObject() throws InterruptedException {
+    T obj = pool.poll();
+    if (obj == null) {
+        synchronized(this) {
+            if (currentSize < maxSize) {
+                obj = factory.create();
+                currentSize++;
+            } else {
+                obj = pool.take(); // Wait for available object
+            }
+        }
+    }
+    return obj;
+}
+
+public void returnObject(T obj) {
+    if (obj != null) {
+        try {
+            pool.put(obj);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+}
+
+public int available() {
+    return pool.size();
+}
