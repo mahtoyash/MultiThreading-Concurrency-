@@ -51,3 +51,13 @@ public static Singleton getInstance() {
     }
     return instance;
 }
+
+2. Read-Write Lock Pattern (Multiple Readers, Single Writer)
+import java.util.concurrent.locks.*;
+class SharedResource {
+private final ReadWriteLock rwLock = new ReentrantReadWriteLock();
+private final Lock readLock = rwLock.readLock();
+private final Lock writeLock = rwLock.writeLock();
+private int value = 0;
+
+
