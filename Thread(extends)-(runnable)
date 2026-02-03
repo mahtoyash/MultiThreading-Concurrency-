@@ -60,4 +60,29 @@ private final Lock readLock = rwLock.readLock();
 private final Lock writeLock = rwLock.writeLock();
 private int value = 0;
 
+public int read() {
+    readLock.lock();
+    try {
+        System.out.println(Thread.currentThread().getName() + " reading: " + value);
+        Thread.sleep(100);
+        return value;
+    } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+        return -1;
+    } finally {
+        readLock.unlock();
+    }
+}
 
+public void write(int newValue) {
+    writeLock.lock();
+    try {
+        System.out.println(Thread.currentThread().getName() + " writing: " + newValue);
+        value = newValue;
+        Thread.sleep(200);
+    } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+    } finally {
+        writeLock.unlock();
+    }
+}
