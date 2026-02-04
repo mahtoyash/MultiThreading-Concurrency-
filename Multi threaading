@@ -1,0 +1,27 @@
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.*;
+
+/*
+ 1. ADVANCED CUSTOM THREAD POOL IMPLEMENTATION
+ 
+  This is a production-grade thread pool built from scratch demonstrating:
+ Worker thread lifecycle management
+ - Task queue with multiple rejection policies
+ - Graceful and immediate shutdown
+ - Thread pool resizing (core + max threads)
+ - Keep-alive time for idle threads
+ - Task execution statistics
+ - Exception handling and logging
+ - Thread factory for custom thread creation
+ - Before/After task execution hooks
+ * 
+ 2. Features:
+ * - Dynamic thread pool sizing
+ * - Multiple rejection policies (Abort, Discard, Caller-Runs, Discard-Oldest)
+ * - Task prioritization
+ * - Monitoring and statistics
+ * - Thread naming and daemon configuration
+ */
