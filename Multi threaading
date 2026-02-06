@@ -51,3 +51,72 @@ assuming n= elements and p=processor
 2. For Parallel Time:- 0((nlog n)/p)
 Parallel time one is the best case to use and Big O of nlog n is worst case.
 Along with this space complexity will be O(n).
+
+
+
+Using ForkJoinPool method for the implementation:
+import java.util.concurrent.RecursiveAction;
+import java.util.concurrent.ForkJoinPool;
+
+public class ParallelMergeSort extends RecursiveAction {
+
+    private static final int THRESHOLD = 1000;
+    private int[] arr;
+    private int left, right;
+
+    public ParallelMergeSort(int[] arr, int left, int right) {
+        this.arr = arr;
+        this.left = left;
+        this.right = right;
+    }
+
+    @Override
+    protected void compute() {
+        if (right - left <= THRESHOLD) {
+            sequentialMergeSort(arr, left, right);
+            return;
+        }
+
+        int mid = (left + right) / 2;
+
+        ParallelMergeSort leftTask =
+                new ParallelMergeSort(arr, left, mid);
+        ParallelMergeSort rightTask =
+                new ParallelMergeSort(arr, mid + 1, right);
+
+        invokeAll(leftTask, rightTask);
+        merge(arr, left, mid, right);
+    }
+
+    private static void sequentialMergeSort(int[] arr, int l, int r) {
+        if (l >= r) return;
+        int m = (l + r) / 2;
+        sequentialMergeSort(arr, l, m);
+        sequentialMergeSort(arr, m + 1, r);
+        merge(arr, l, m, r);
+    }
+
+    private static void merge(int[] arr, int l, int m, int r) {
+        int[] temp = new int[r - l + 1];
+        int i = l, j = m + 1, k = 0;
+
+        while (i <= m && j <= r)
+            temp[k++] = arr[i] <= arr[j] ? arr[i++] : arr[j++];
+
+        while (i <= m) temp[k++] = arr[i++];
+        while (j <= r) temp[k++] = arr[j++];
+
+        System.arraycopy(temp, 0, arr, l, temp.length);
+    }
+
+    public static void main(String[] args) {
+        int[] data = {9, 3, 7, 1, 4, 8, 2};
+
+        ForkJoinPool pool = new ForkJoinPool();
+        pool.invoke(new ParallelMergeSort(data, 0, data.length - 1));
+
+        for (int x : data) System.out.print(x + " ");
+    }
+}
+can be said this is a good industry based approach 
+
