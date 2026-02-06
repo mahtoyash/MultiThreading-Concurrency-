@@ -28,3 +28,18 @@ import java.util.*;
 
 
 ParallelMergeSort
+algorithm for the use of Parallel merge sorting
+:-
+parallelMergeSort(A):
+    if size(A) <= THRESHOLD:
+        sequentialMergeSort(A)
+        return
+
+    split A into L and R
+
+    spawn thread1 -> parallelMergeSort(L)
+    spawn thread2 -> parallelMergeSort(R)
+
+    wait for thread1 and thread2
+
+    merge L and R into A
