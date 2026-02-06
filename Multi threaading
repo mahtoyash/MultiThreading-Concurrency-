@@ -43,3 +43,11 @@ parallelMergeSort(A):
     wait for thread1 and thread2
 
     merge L and R into A
+
+
+TIME COMPLEXITY
+assuming n= elements and p=processor
+1.For toatal operations O(nlog n)
+2. For Parallel Time:- 0((nlog n)/p)
+Parallel time one is the best case to use and Big O of nlog n is worst case.
+Along with this space complexity will be O(n).
