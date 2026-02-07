@@ -118,5 +118,5 @@ public class ParallelMergeSort extends RecursiveAction {
         for (int x : data) System.out.print(x + " ");
     }
 }
-can be said this is a good industry based approach 
+c 
 
